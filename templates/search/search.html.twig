@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Результаты поиска{% endblock %}
+
+{% block main %}
+    <section class="lots container">
+        {% if pagination is not defined or pagination|length == 0 %}
+            <h2>Ничего не найдено</h2>
+        {% else %}
+            <h2>Результаты поиска по запросу «<span>{{ app.request.query.get('q') }}</span>»</h2>
+            {% include 'lot/lot_list.html.twig' %}
+        {% endif %}
+    </section>
+{% endblock %}

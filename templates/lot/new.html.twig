@@ -1,0 +1,53 @@
+{% extends "base.html.twig" %}
+{% form_theme newLotForm 'lot/_lot_form.html.twig' %}
+
+{% block title %}Добавление лота{% endblock %}
+
+{% block main %}
+    {{ form_start(newLotForm, {'attr': {'class': 'form form--add-lot container'}}) }}
+        <h2>Добавление лота</h2>
+        <div class="form__container-two">
+            <div class="form__item{% if newLotForm.name.vars.errors|length > 0 %} form__item--invalid{% endif %}">
+                {{ form_row(newLotForm.name, {'label': 'Наименование', 'attr': {'placeholder': 'Введите наименование лота'}}) }}
+            </div>
+            <div class="form__item{% if newLotForm.category.vars.errors|length > 0 %} form__item--invalid{% endif %}">
+                {{ form_row(newLotForm.category, {'label': 'Категория'}) }}
+            </div>
+        </div>
+        <div class="form__item form__item--wide{% if newLotForm.description.vars.errors|length > 0 %} form__item--invalid{% endif %}">
+            {{ form_row(newLotForm.description, {'label': 'Описание', 'attr': {'placeholder': 'Напишите описание лота'}}) }}
+        </div>
+        <div class="form__item form__item--file{% if newLotForm.image.vars.errors|length > 0 %} form__item--invalid{% endif %}">
+            <label>Изображение</label>
+            <div class="preview">
+                <button class="preview__remove" type="button">x</button>
+                <div class="preview__img">
+                    <img src="" width="113" height="113" alt="Изображение лота">
+                </div>
+            </div>
+            <div class="form__input-file">
+                {{ form_widget(newLotForm.image, {'attr': {'class': 'visually-hidden'}}) }}
+                {{ form_label(newLotForm.image, '+ Добавить') }}
+                {{ form_errors(newLotForm.image) }}
+            </div>
+        </div>
+        <div class="form__container-two">
+            <div class="form__item{% if newLotForm.startPrice.vars.errors|length > 0 %} form__item--invalid{% endif %}">
+                {{ form_row(newLotForm.startPrice, {'label': 'Начальная цена', 'attr': {'value': '1'}}) }}
+            </div>
+            <div class="form__item{% if newLotForm.step.vars.errors|length > 0 %} form__item--invalid{% endif %}">
+                {{ form_row(newLotForm.step, {'label': 'Шаг ставки', 'attr': {'value': '1'}}) }}
+            </div>
+        </div>
+        <div class="form__item form__item--wide datepicker{% if newLotForm.endDate.vars.errors|length > 0 %} form__item--invalid{% endif %}">
+            {{ form_row(newLotForm.endDate, {'label': 'Дата завершения'}) }}
+        </div>
+        <span class="form__error form__error--bottom">Пожалуйста, исправьте ошибки в форме</span>
+        <button type="submit" class="button">Добавить лот</button>
+    {{ form_end(newLotForm) }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/new_lot.js') }}"></script>
+{% endblock %}

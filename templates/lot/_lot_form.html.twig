@@ -1,0 +1,15 @@
+{% block form_row %}
+    {%- set widget_attr = {} -%}
+    
+    {{- form_label(form) -}}
+    {{- form_widget(form, widget_attr) -}}
+    {{- form_errors(form) -}}
+{% endblock %}
+
+{%- block form_errors -%}
+    {%- if errors|length > 0 -%}
+        {%- for error in errors -%}
+            <div class="form__error">{{ error.message }}</div>
+        {%- endfor -%}
+    {%- endif -%}
+{%- endblock form_errors -%}

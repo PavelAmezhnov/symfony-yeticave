@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block categories %}{% endblock %}
+
+{% block main %}
+    <section class="promo container">
+        <h2 class="promo__title">Нужен стафф для катки?</h2>
+        <p class="promo__text">На нашем интернет-аукционе ты найдёшь самое эксклюзивное сноубордическое и горнолыжное снаряжение.</p>
+        <ul class="promo__list">
+            {% for category in categories %}
+                <li class="promo__item promo__item--{{ category.slug }}">
+                    <a class="promo__link" href="{{ path('app_by_category', {'slug': category.slug}) }}">{{ category.name }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </section>
+    <section class="lots container">
+        <div class="lots__header">
+          <h2>Открытые лоты</h2>
+          <select class="lots__select">
+            <option value="">Все категории</option>
+            {% for category in categories %}
+                <option value="{{ category.slug }}">{{ category.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        {% include 'lot/lot_list.html.twig' %}
+    </section>
+{% endblock %}

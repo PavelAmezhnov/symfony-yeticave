@@ -1,0 +1,9 @@
+<nav class="nav">
+    <ul class="nav__list container">
+        {% for category in categories %}
+            <li class="nav__item">
+                <a href="{{ path('app_by_category', {'slug': category.slug}) }}">{{ category.name }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+</nav>

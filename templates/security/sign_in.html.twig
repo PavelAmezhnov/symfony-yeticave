@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+{% form_theme userForm 'security/_user_form.html.twig' %}
+
+{% block title %}Вход{% endblock %}
+
+{% block main %}
+    {{ form_start(userForm, {'attr': {'class': 'form container'} }) }}
+        <h2>Вход</h2>
+        <div>{{ error.message|default('') }}</div>
+        {{ form_row(userForm.email, {'label': 'E-mail*', 'attr': {'placeholder': 'Введите e-mail'}, 'value': username}) }}
+        {{ form_row(userForm.plainPassword, {'label': 'Пароль*', 'attr': {'placeholder': 'Введите пароль'}}) }}
+        <button type="submit" class="button">Войти</button>
+    {{ form_end(userForm) }}
+{% endblock %}

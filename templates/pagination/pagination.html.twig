@@ -1,0 +1,30 @@
+{# TODO добавить ссылки на первую и последнюю страницы #}
+{% if pageCount > 1 %}
+    <ul class="pagination-list">
+        {% if previous is defined %}
+            <li class="pagination-item pagination-item-prev">
+                <a href="{{ path(route, query|merge({(pageParameterName): previous})) }}">Назад</a>
+            </li>
+        {% else %}
+            <li class="pagination-item pagination-item-prev"></li>
+        {% endif %}
+        
+        {% for page in pagesInRange %}
+            {% if page != current %}
+                <li class="pagination-item">
+                    <a href="{{ path(route, query|merge({(pageParameterName): page})) }}">{{ page }}</a>
+                </li>
+            {% else %}
+                <li class="pagination-item pagination-item-active"><a>{{ page }}</a></li>
+            {% endif %}
+        {% endfor %}        
+        
+        {% if next is defined %}
+            <li class="pagination-item pagination-item-next">
+                <a href="{{ path(route, query|merge({(pageParameterName): next})) }}">Вперед</a>
+            </li>
+        {% else %}
+            <li class="pagination-item pagination-item-next"></li>
+        {% endif %}
+    </ul>
+{% endif %}

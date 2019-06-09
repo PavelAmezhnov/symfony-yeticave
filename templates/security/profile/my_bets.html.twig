@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Мои ставки{% endblock %}
+
+{% block main %}
+    <section class="rates container">
+        <h2>Мои ставки</h2>
+        <table class="rates__list">
+            {% for bet in bets %}
+                {% if bet.lot.winner == app.user %}
+                    {% set row_class = ' rates__item--win' %}
+                    {% set status_class = ' timer--win' %}
+                    {% set status = 'Ставка выиграла' %}
+                {% elseif bet.lot.endDate < date('now') %}
+                    {% set row_class = ' rates__item--end' %}
+                    {% set status_class = ' timer--end' %}
+                    {% set status = 'Торги окончены' %}
+                {% else %}
+                    {% set row_class = '' %}
+                    {% if date('now').diff(date(bet.lot.endDate)).d > 0 %}
+                        {% set status_class = '' %}
+                    {% else %}
+                        {% set status_class = ' timer--finishing' %}
+                    {% endif %}
+                    {% set status = time_left(bet.lot.endDate).time %}
+                {% endif %}
+                
+                {% if date('now').diff(date(bet.updatedAt)).d > 0 %}
+                    {% set time_bet = bet.updatedAt|date('d.m.y в H:i') %}
+                {% else %}
+                    {% set time_bet = bet.updatedAt|ago %}
+                {% endif %}
+                <tr class="rates__item{{ row_class }}">
+                    <td class="rates__info">
+                        <div class="rates__img">
+                            <img src="{{ asset(bet.lot.imagePath)|imagine_filter('lot_thumbnail') }}" width="100" height="100" alt="{{ bet.lot.name }}">
+                        </div>
+                        <h3 class="rates__title"><a href="{{ path('app_by_id', {'id': bet.lot.id}) }}">{{ bet.lot.name }}</a></h3>
+                    </td>
+                    <td class="rates__category">{{ bet.lot.category.name }}</td>
+                    <td class="rates__timer">
+                        <div class="timer timer{{ status_class }}">{{ status }}</div>
+                    </td>
+                    <td class="rates__price">{{ bet.value|number_format(0, ',', ' ') }} р</td>
+                    <td class="rates__time">{{ time_bet }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </section>
+{% endblock %}

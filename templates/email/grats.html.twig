@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Поздравляем!</title>
+    </head>
+    <body>
+        <h1>Здравствуйте, {{ winner.name }}</h1>
+        <p>
+            Ваша ставка в размере {{ bet|number_format(0, ',', ' ') }} руб. на лот 
+            <a href="{{ url }}">{{ lot.name }}</a> 
+            стала выигрышной.
+        </p>
+        <p>
+            Контакты владельца лота: {{ lot.author.contacts }}
+        </p>
+    </body>
+</html>

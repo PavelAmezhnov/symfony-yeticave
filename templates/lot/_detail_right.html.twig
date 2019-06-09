@@ -1,0 +1,47 @@
+{% if countBets == 0 %}
+    {% set current_price = lot.startPrice %}
+{%  else %}
+    {% set current_price = lastBets[0].value %}
+{% endif %}
+
+<div class="lot-item__state">
+    <div class="lot-item__timer timer">{{ time_left(lot.endDate).time }}</div>
+    <div class="lot-item__cost-state">
+        <div class="lot-item__rate">
+            <span class="lot-item__amount">Текущая цена</span>
+            <span class="lot-item__cost">{{ current_price|number_format(0, ',', ' ') }}</span>
+        </div>
+        <div class="lot-item__min-cost">
+            Мин. ставка {{ (current_price + lot.step)|number_format(0, ',', ' ') }}<span> р</span>
+        </div>
+    </div>
+    {% if is_granted('IS_AUTHENTICATED_REMEMBERED') and app.user.id != lot.author.id %}
+        <form id="new-bet-form" class="lot-item__form" action="{{ path('app_new_bet') }}">
+            <p class="lot-item__form-item">
+                <input type="hidden" name="id" value="{{ lot.id }}">
+                <input type="hidden" name="min-cost" value="{{ current_price + lot.step }}">
+                <label for="cost">Ваша ставка</label>
+                <input id="cost" type="number" name="cost" value="{{ current_price + lot.step }}">
+            </p>
+            <button type="button" class="button">Сделать ставку</button>
+        </form>
+    {% endif %}
+</div>
+<div class="history">
+    <h3>История ставок (<span>{{ countBets }}</span>)</h3>
+    <table class="history__list">
+        {% for bet in lastBets %}
+            {% if date('now').diff(date(bet.updatedAt)).d > 0 %}
+                {% set time_bet = bet.updatedAt|date('d.m.y в H:i') %}
+            {% else %}
+                {% set time_bet = bet.updatedAt|ago %}
+            {% endif %}
+            <tr class="history__item">
+                <td class="history__name">{{ bet.author.name }}</td>
+                <td class="history__price">{{ bet.value|number_format(0, ',', ' ') }} р</td>
+                <td class="history__time">{{ time_bet }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+</div>
+<div id="modal"></div>    

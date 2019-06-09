@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+{% form_theme userForm 'security/_user_form.html.twig' %}
+
+{% block title %}Регистрация{% endblock %}
+
+{% block main %}
+    {% if isValid %}
+        {%- set form_class = 'form container' -%}
+    {% else %}
+        {%- set form_class = 'form container form--invalid' -%}
+    {% endif %}
+    
+    {{ form_start(userForm, {'attr': {'class': form_class} }) }}
+        <h2>Регистрация нового аккаунта</h2>
+        {{ form_row(userForm.email, {'label': 'E-mail*', 'attr': {'placeholder': 'Введите e-mail'}}) }}
+        {{ form_row(userForm.plainPassword, {'label': 'Пароль*', 'attr': {'placeholder': 'Введите пароль'}}) }}
+        {{ form_row(userForm.name, {'label': 'Имя*', 'attr': {'placeholder': 'Введите имя'}}) }}
+        {{ form_row(userForm.contacts, {'label': 'Контактные данные*', 'attr': {'placeholder': 'Напишите как с Вами связаться'}}) }}
+        <div class="form__item form__item--file form__item--last">
+            <span>Изображение</span>
+            <div class="preview">
+                <button class="preview__remove" type="button">x</button>
+                <div class="preview__img">
+                    <img src="" width="113" height="113" alt="">
+                </div>
+            </div>
+            <div class="form__input-file">
+                {{ form_widget(userForm.avatarFile, {'attr': {'class': 'visually-hidden'}, 'required': false}) }}
+                {{ form_label(userForm.avatarFile, '+ Добавить') }}
+                {{ form_errors(userForm.avatarFile) }}
+            </div>
+        </div>
+        <span class="form__error form__error--bottom">Пожалуйста, исправьте ошибки в форме</span>
+        <button type="submit" class="button">Зарегистрироваться</button>
+        <a class="text-link" href="{{ path('app_sign_in') }}">Уже есть аккаунт</a>
+    {{ form_end(userForm) }}
+{% endblock %}

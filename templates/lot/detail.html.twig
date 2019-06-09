@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ lot.name }}{% endblock %}
+
+{% block main %}
+    <section class="lot-item container">
+        <h2>{{ lot.name }}</h2>
+        <div class="lot-item__content">
+            <div class="lot-item__left">
+                <div class="lot-item__image">
+                    <img src="{{ asset(lot.imagePath) }}" width="730" height="548" alt="{{ lot.name }}">
+                </div>
+                <p class="lot-item__category">Категория: <span>{{ lot.category.name }}</span></p>
+                <p class="lot-item__description">{{ lot.description }}</p>
+            </div>
+            <div class="lot-item__right">
+                {% include 'lot/_detail_right.html.twig' %}
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/new_bet.js') }}"></script>
+{% endblock %}
