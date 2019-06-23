@@ -41,13 +41,17 @@ class SecurityController extends BaseController
                 $user->setAvatar($avatarFilename);
             }
             
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($user);
+            $em->flush();
+            
             return $guard->authenticateUserAndHandleSuccess($user, $request, $authenticator, 'main');
         }
         
         $this->renderParameters['userForm'] = $form->createView();
         $this->renderParameters['isValid'] = $form->isSubmitted() && $form->isValid() || $request->isMethod('GET');
         
-        return $this->render('security/sign_up.html.twig');
+        return $this->render('security/sign_up.html.twig', $this->renderParameters);
     }
     
     /**
@@ -59,7 +63,7 @@ class SecurityController extends BaseController
         $this->renderParameters['error']    = $authenticationUtils->getLastAuthenticationError();
         $this->renderParameters['username'] = $authenticationUtils->getLastUsername();
         
-        return $this->render('security/sign_in.html.twig');
+        return $this->render('security/sign_in.html.twig', $this->renderParameters);
     }
     
     /**
@@ -75,7 +79,7 @@ class SecurityController extends BaseController
      */
     public function profile()
     {
-        return $this->render('security/profile/profile.html.twig');
+        return $this->render('security/profile/profile.html.twig', $this->renderParameters);
     }
     
     /**
@@ -86,6 +90,6 @@ class SecurityController extends BaseController
     {
         $this->renderParameters['bets'] = $this->em->getRepository(Bet::class)->getMyBets($this->getUser());
         
-        return $this->render('security/profile/my_bets.html.twig');
+        return $this->render('security/profile/my_bets.html.twig', $this->renderParameters);
     }
 }

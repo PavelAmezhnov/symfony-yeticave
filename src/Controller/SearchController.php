@@ -28,7 +28,7 @@ class SearchController extends BaseController
             );
         }
         
-        return $this->render('search/search.html.twig');
+        return $this->render('search/search.html.twig', $this->renderParameters);
     }
     
     public function advancedSearch()

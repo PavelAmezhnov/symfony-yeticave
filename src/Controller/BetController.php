@@ -2,12 +2,11 @@
 
 namespace App\Controller;
 
+use App\Controller\BaseController;
+use App\Service\BetHelper;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use App\Controller\BaseController;
-use App\Entity\Bet;
-use App\Entity\Lot;
 
 class BetController extends BaseController
 {
@@ -15,33 +14,21 @@ class BetController extends BaseController
      * @IsGranted("ROLE_USER")
      * @Route("/bet/new", name="app_new_bet")
      */
-    public function new(Request $request)
-    {
-        $lot = $this->em->getRepository(Lot::class)->getOpenLotById($request->get('id'));
+    public function new(Request $request, BetHelper $betHelper)
+    {   
+        $result = $betHelper->addNewBet($request->get('id'), $this->getUser(), $request->get('value'));
         
-        if (is_null($lot)) {
-            return $this->json('Лот не найден среди открытых', 500);
+        if (is_string($result)) {
+            return $this->json($result, 500);
         }
-        if ($lot->getAuthor() === $this->getUser()) {
-            return $this->json('Автор лота не может делать на него ставки', 500);
-        }
-        $bets = $this->em->getRepository(Bet::class)->findBy(['lot' => $lot], ['updatedAt' => 'DESC']);
-        $currentPrice = empty($bets) ? $lot->getStartPrice() : $bets[0]->getValue();
-        if ($currentPrice + $lot->getStep() > $request->get('value')) {
-            return $this->json(sprintf('Ставка не может быть ниже минимальной (%d)', $currentPrice + $lot->getStep()), 500);
-        }
+
+        $bets = $betHelper->sortBetsByValue($result);
         
-        $bet = new Bet();
-        $bet->setAuthor($this->getUser())
-            ->setLot($lot)
-            ->setValue($request->get('value'));
-        $this->em->persist($bet);
-        $this->em->flush();
+        $this->renderParameters['lot'] = $betHelper->getLot();
+        $this->renderParameters['currentPrice'] = $betHelper->getLot()->getCurrentPrice();
+        $this->renderParameters['countBets'] = count($bets);
+        $this->renderParameters['lastBets'] = array_slice($bets, 0, 10);
         
-        $this->renderParameters['lot'] = $lot;
-        $this->renderParameters['countBets'] = count($bets) + 1;
-        $this->renderParameters['lastBets'] = array_merge([$bet], array_slice($bets, 0, 9));
-        
-        return $this->render('lot/_detail_right.html.twig');
+        return $this->render('lot/_detail_right.html.twig', $this->renderParameters);
     }
 }

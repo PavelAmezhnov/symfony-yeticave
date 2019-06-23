@@ -12,6 +12,7 @@ use App\Entity\Category;
 use App\Entity\Bet;
 use App\Form\NewLotFormType;
 use App\Service\UploadHelper;
+use App\Service\BetHelper;
 
 class LotController extends BaseController
 {
@@ -26,7 +27,7 @@ class LotController extends BaseController
             9
         );
         
-        return $this->render('lot/index.html.twig');
+        return $this->render('lot/index.html.twig', $this->renderParameters);
     }
     
     /**
@@ -42,20 +43,28 @@ class LotController extends BaseController
             9
         );
         
-        return $this->render('lot/index.html.twig');
+        return $this->render('lot/index.html.twig', $this->renderParameters);
     }
     
     /**
      * @Route("/lot/{id}", name="app_by_id", requirements={"id"="\d+"})
      */
-    public function byId(string $id)
+    public function byId(string $id, BetHelper $betHelper)
     {
-        $this->renderParameters['lot'] = $lot = $this->em->getRepository(Lot::class)->getLotById($id, $this->getUser());
-        $bets = $this->em->getRepository(Bet::class)->findBy(['lot' => $lot], ['updatedAt' => 'DESC']);
+        $lot = $this->em->getRepository(Lot::class)->getLotById($id, $this->getUser());
+        
+        if (is_null($lot)) {
+            return $this->render('lot/forbidden.html.twig', $this->renderParameters);
+        }
+        
+        $bets = $betHelper->sortBetsByValue($this->em->getRepository(Bet::class)->findBy(['lot' => $lot]));
+        
+        $this->renderParameters['lot'] = $lot;
+        $this->renderParameters['currentPrice'] = $lot->getCurrentPrice();
         $this->renderParameters['countBets'] = count($bets);
         $this->renderParameters['lastBets'] = array_slice($bets, 0, 10);
         
-        return $this->render('lot/detail.html.twig');
+        return $this->render('lot/detail.html.twig', $this->renderParameters);
     }
     
     /**
@@ -70,8 +79,7 @@ class LotController extends BaseController
         if ($form->isSubmitted() && $form->isValid()) {
             $lot = $form->getData();
             $imageFilename = $uploadHelper->saveUpload($request->files->get('new_lot_form')['image'], $uploadHelper::LOT);
-            $lot->setImage($imageFilename);
-            $lot->setAuthor($this->getUser());
+            $lot->setImage($imageFilename)->setAuthor($this->getUser());
             
             $this->em->persist($lot);
             $this->em->flush();
@@ -81,6 +89,6 @@ class LotController extends BaseController
         
         $this->renderParameters['newLotForm'] = $form->createView();
         
-        return $this->render('lot/new.html.twig');
+        return $this->render('lot/new.html.twig', $this->renderParameters);
     }
 }
