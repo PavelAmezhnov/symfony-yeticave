@@ -30,9 +30,11 @@
                     <nav class="user-menu">
                         {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
                             <div class="user-menu__image">
-                                <a href="{{ path('app_profile') }}">
-                                    <img src="{{ asset(app.user.avatarPath)|imagine_filter('user_thumbnail') }}" width="40" height="40" alt="Пользователь">
-                                </a>
+                                {% if app.user.avatarPath %}
+                                    <a href="{{ path('app_profile') }}">
+                                        <img src="{{ asset(app.user.avatarPath)|imagine_filter('user_thumbnail') }}" width="40" height="40" alt="Пользователь">
+                                    </a>
+                                {% endif %}
                             </div>
                             <div class="user-menu__logged">
                                 <p><a href="{{ path('app_profile') }}">{{ app.user.name }}</a></p>

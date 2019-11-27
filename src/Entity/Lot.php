@@ -194,7 +194,7 @@ class Lot
     
     public function getCurrentPrice(): int
     {
-        $currentPrice = $this->startPrice;
+        $currentPrice = $this->getStartPrice();
         
         foreach ($this->getBets() as $bet) {
             if ($currentPrice < $bet->getValue()) {

@@ -1,9 +1,10 @@
-
 ###> symfony/framework-bundle ###
 /.env.local
 /.env.local.php
 /.env.*.local
+/media/
 /public/bundles/
+/public/upload/
 /var/
 /vendor/
 ###< symfony/framework-bundle ###
@@ -11,3 +12,8 @@
 ###> liip/imagine-bundle ###
 /public/media/cache/
 ###< liip/imagine-bundle ###
+
+###> symfony/phpunit-bridge ###
+.phpunit
+/phpunit.xml
+###< symfony/phpunit-bridge ###

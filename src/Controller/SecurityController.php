@@ -41,8 +41,7 @@ class SecurityController extends BaseController
                 $user->setAvatar($avatarFilename);
             }
             
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($user);
+            $this->em->persist($user);
             $em->flush();
             
             return $guard->authenticateUserAndHandleSuccess($user, $request, $authenticator, 'main');

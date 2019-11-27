@@ -1,27 +1,21 @@
-{% if countBets == 0 %}
-    {% set current_price = lot.startPrice %}
-{%  else %}
-    {% set current_price = lastBets[0].value %}
-{% endif %}
-
 <div class="lot-item__state">
     <div class="lot-item__timer timer">{{ time_left(lot.endDate).time }}</div>
     <div class="lot-item__cost-state">
         <div class="lot-item__rate">
             <span class="lot-item__amount">Текущая цена</span>
-            <span class="lot-item__cost">{{ current_price|number_format(0, ',', ' ') }}</span>
+            <span class="lot-item__cost">{{ currentPrice|number_format(0, ',', ' ') }}</span>
         </div>
         <div class="lot-item__min-cost">
-            Мин. ставка {{ (current_price + lot.step)|number_format(0, ',', ' ') }}<span> р</span>
+            Мин. ставка {{ (currentPrice + lot.step)|number_format(0, ',', ' ') }}<span> р</span>
         </div>
     </div>
     {% if is_granted('IS_AUTHENTICATED_REMEMBERED') and app.user.id != lot.author.id %}
         <form id="new-bet-form" class="lot-item__form" action="{{ path('app_new_bet') }}">
             <p class="lot-item__form-item">
                 <input type="hidden" name="id" value="{{ lot.id }}">
-                <input type="hidden" name="min-cost" value="{{ current_price + lot.step }}">
+                <input type="hidden" name="min-cost" value="{{ currentPrice + lot.step }}">
                 <label for="cost">Ваша ставка</label>
-                <input id="cost" type="number" name="cost" value="{{ current_price + lot.step }}">
+                <input id="cost" type="number" name="cost" value="{{ currentPrice + lot.step }}">
             </p>
             <button type="button" class="button">Сделать ставку</button>
         </form>
